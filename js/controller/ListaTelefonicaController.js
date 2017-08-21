@@ -1,6 +1,6 @@
 angular.module("listaTelefonica").controller("listaTelefonicaController", function($scope, $http){
     $scope.titulo = "Lista telefônica";
-    
+
     $scope.contatos = [{nome: 'Lucas', telefone: '4721-1669'},
                        {nome: 'Marcia', telefone: '97360-2898'},
                        {nome:'Oscar', telefone:'9740-0799'}];
@@ -12,7 +12,7 @@ angular.module("listaTelefonica").controller("listaTelefonicaController", functi
                         {nome:'GVT', codigo:'001', categoria:'Residencial'},
                         {nome:'Embratel', codigo:'002', categoria:'Residencial'}];
 
-    
+    /* */
   /*  var carregarContatos = function()
     {
         $http.get("").success(function(data){
