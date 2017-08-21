@@ -1,24 +1,24 @@
-angular.module("PhoneList").controller("PhoneListController", function($scope, $http){
+angular.module("PhoneList").controller("PhoneListController", function($scope, $http, contactsAPI, operatorsAPI){
     $scope.title = "Lista telefônica";
 
     let upload_contacts = function(){
-        $http.get("http://localhost:4000/api/v1/contacts").success(function(data){
-          $scope.contacts = data;
-        }).error(function(data, status){
-          $scope.message = "Aconteceu um problema ao carregar os contacts" + data;
-        });
+      contactsAPI.getContacts().success(function(data){
+        $scope.contacts = data;
+      }).error(function(data, status){
+        $scope.message = "Aconteceu um problema ao carregar os contacts" + data;
+      });
     };
 
     let upload_operators = function(){
-        $http.get("http://localhost:4000/api/v1/operators").success(function(data){
-          $scope.operadoras = data;
-        }).error(function(data, status){
-          $scope.message = "Aconteceu um problema ao carregar as operadoras" + data;
-        });
+      operatorsAPI.getOperators().success(function(data){
+        $scope.operadoras = data;
+      }).error(function(data, status){
+        $scope.message = "Aconteceu um problema ao carregar as operadoras" + data;
+      });
     }
 
     $scope.add_contact = function(contact){
-      $http.post("http://localhost:4000/api/v1/contact", contact).success(function(data){
+      contactsAPI.saveContacts(contact).success(function(data){
         delete $scope.contact;
         $scope.contactForm.$setPristine();
         upload_contacts();
@@ -38,7 +38,7 @@ angular.module("PhoneList").controller("PhoneListController", function($scope, $
       let selected_contacts = $scope.is_selected(contacts);
 
       selected_contacts.forEach(function(contact){
-        $http.delete("http://localhost:4000/api/v1/contact/" + contact.id).success(function(data){
+        contactsAPI.deleteContacts(contact).success(function(data){
           delete $scope.contact;
           $scope.contactForm.$setPristine();
           upload_contacts();
