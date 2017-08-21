@@ -1,72 +1,58 @@
 angular.module("listaTelefonica").controller("listaTelefonicaController", function($scope, $http){
     $scope.titulo = "Lista telefônica";
 
-    $scope.contatos = [{nome: 'Lucas', telefone: '4721-1669'},
-                       {nome: 'Marcia', telefone: '97360-2898'},
-                       {nome:'Oscar', telefone:'9740-0799'}];
-
-    $scope.operadoras = [{nome:'Vivo', codigo:'015', categoria:'Celular'},
-                        {nome:'Oi', codigo:'031', categoria:'Celular'},
-                        {nome:'Claro', codigo:'021', categoria:'Celular'},
-                        {nome:'Tim', codigo:'041', categoria:'Celular'},
-                        {nome:'GVT', codigo:'001', categoria:'Residencial'},
-                        {nome:'Embratel', codigo:'002', categoria:'Residencial'}];
-
-    /* */
-  /*  var carregarContatos = function()
-    {
-        $http.get("").success(function(data){
-            $scope.contatos = data;
+    let carregarContatos = function(){
+        $http.get("http://localhost:4000/api/v1/contacts").success(function(data){
+          $scope.contatos = data;
         }).error(function(data, status){
-            $scope.message = "Aconteceu um problema ao carregar os contatos" + data;
+          $scope.message = "Aconteceu um problema ao carregar os contatos" + data;
         });
     };
-    var carregarOperadoras = function()
-    {
-        $http.get("").success(function(data){ 
-            $scope.operadoras = data;
+
+    let carregarOperadoras = function(){
+        $http.get("http://localhost:4000/api/v1/operators").success(function(data){
+          $scope.operadoras = data;
         }).error(function(data, status){
-            $scope.message = "Aconteceu um problema ao carregar as operadoras" + data;
+          $scope.message = "Aconteceu um problema ao carregar as operadoras" + data;
         });
-    }*/
-    /*
-    $scope.adicionarContato = function(contato)
-    {
-        $scope.contatos.push(angular.copy(contato));
+    }
+
+    $scope.adicionarContato = function(contato){
+      $http.post("http://localhost:4000/api/v1/contact", contato).success(function(data){
         delete $scope.contato;
         $scope.contatoForm.$setPristine();
-    };*/
+        carregarContatos();
+      }).error(function(data, status){
+        $scope.message = "Aconteceu um problema ao salvar o contato" + data;
+      });
+    };
 
-    $scope.adicionarContato = function(contato)
-    {
-        $http.post("", contato).success(function(data){
-            delete $scope.contato;
-            $scope.contatoForm.$setPristine();
-            carregarContatos();
+    $scope.isSelecionado = function(contatos){
+      let contatoSelecionado = contatos.filter(function(contato){
+          return contato.selecionado;
+      });
+      return contatoSelecionado;
+    };
+
+    $scope.removerContato = function(contatos){
+      let contatos_selecionados = $scope.isSelecionado(contatos);
+
+      contatos_selecionados.forEach(function(contato){
+        $http.delete("http://localhost:4000/api/v1/contact/" + contato.id).success(function(data){
+          delete $scope.contato;
+          $scope.contatoForm.$setPristine();
+          carregarContatos();
+        }).error(function(data, status){
+          $scope.message = "Aconteceu um problema ao excluir o contato" + data;
         });
+      });
     };
 
-    $scope.removerContato = function(contatos)
-    {
-        $scope.contatos = contatos.filter(function(contato){
-            if(!contato.selecionado)
-                return contato;
-        });
+    $scope.ordenarPor = function(campo){
+      $scope.criterioOrdenacao = campo;
+      $scope.direcaoOrdenacao = !$scope.direcaoOrdenacao;
     };
 
-    $scope.isSelecionado = function(contatos)
-    {
-        var contatoSelecionado = contatos.some(function(contato){
-            return contato.selecionado;
-        });
-        return contatoSelecionado;
-    };
-
-    $scope.ordenarPor = function(campo)
-    {
-        $scope.criterioOrdenacao = campo;
-        $scope.direcaoOrdenacao = !$scope.direcaoOrdenacao;
-    };
-    /*carregarContatos();
-    carregarOperadoras();*/
+    carregarContatos();
+    carregarOperadoras();
 });
