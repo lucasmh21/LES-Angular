@@ -1,1 +1,1 @@
-var app = angular.module("listaTelefonica",["ngMessages"]);
+var app = angular.module("PhoneList",["ngMessages"]);

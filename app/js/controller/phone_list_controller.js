@@ -1,15 +1,15 @@
-angular.module("listaTelefonica").controller("listaTelefonicaController", function($scope, $http){
-    $scope.titulo = "Lista telefônica";
+angular.module("PhoneList").controller("PhoneListController", function($scope, $http){
+    $scope.title = "Lista telefônica";
 
-    let carregarContatos = function(){
+    let upload_contacts = function(){
         $http.get("http://localhost:4000/api/v1/contacts").success(function(data){
-          $scope.contatos = data;
+          $scope.contacts = data;
         }).error(function(data, status){
-          $scope.message = "Aconteceu um problema ao carregar os contatos" + data;
+          $scope.message = "Aconteceu um problema ao carregar os contacts" + data;
         });
     };
 
-    let carregarOperadoras = function(){
+    let upload_operators = function(){
         $http.get("http://localhost:4000/api/v1/operators").success(function(data){
           $scope.operadoras = data;
         }).error(function(data, status){
@@ -17,42 +17,42 @@ angular.module("listaTelefonica").controller("listaTelefonicaController", functi
         });
     }
 
-    $scope.adicionarContato = function(contato){
-      $http.post("http://localhost:4000/api/v1/contact", contato).success(function(data){
-        delete $scope.contato;
-        $scope.contatoForm.$setPristine();
-        carregarContatos();
+    $scope.add_contact = function(contact){
+      $http.post("http://localhost:4000/api/v1/contact", contact).success(function(data){
+        delete $scope.contact;
+        $scope.contactForm.$setPristine();
+        upload_contacts();
       }).error(function(data, status){
-        $scope.message = "Aconteceu um problema ao salvar o contato" + data;
+        $scope.message = "Aconteceu um problema ao salvar o contact" + data;
       });
     };
 
-    $scope.isSelecionado = function(contatos){
-      let contatoSelecionado = contatos.filter(function(contato){
-          return contato.selecionado;
+    $scope.is_selected = function(contacts){
+      let selected_contacts = contacts.filter(function(contact){
+          return contact.selected;
       });
-      return contatoSelecionado;
+      return selected_contacts;
     };
 
-    $scope.removerContato = function(contatos){
-      let contatos_selecionados = $scope.isSelecionado(contatos);
+    $scope.delete_contact = function(contacts){
+      let selected_contacts = $scope.is_selected(contacts);
 
-      contatos_selecionados.forEach(function(contato){
-        $http.delete("http://localhost:4000/api/v1/contact/" + contato.id).success(function(data){
-          delete $scope.contato;
-          $scope.contatoForm.$setPristine();
-          carregarContatos();
+      selected_contacts.forEach(function(contact){
+        $http.delete("http://localhost:4000/api/v1/contact/" + contact.id).success(function(data){
+          delete $scope.contact;
+          $scope.contactForm.$setPristine();
+          upload_contacts();
         }).error(function(data, status){
-          $scope.message = "Aconteceu um problema ao excluir o contato" + data;
+          $scope.message = "Aconteceu um problema ao excluir o contact" + data;
         });
       });
     };
 
-    $scope.ordenarPor = function(campo){
-      $scope.criterioOrdenacao = campo;
-      $scope.direcaoOrdenacao = !$scope.direcaoOrdenacao;
+    $scope.order_by = function(field){
+      $scope.sorting_criteria = field;
+      $scope.direction_order = !$scope.direction_order;
     };
 
-    carregarContatos();
-    carregarOperadoras();
+    upload_contacts();
+    upload_operators();
 });
