@@ -1,0 +1,74 @@
+<html ng-app="PhoneList">
+  <head>
+    <meta charset="UTF-8"/>
+
+    <title>Lista Telefônica</title>
+
+    <!-- import libs -->
+    <script src="../lib/angular/angular.js"></script>
+    <script src="../lib/angular/angular-messages.js"></script>
+    <script src="../lib/angular/angular-route.js"></script>
+    <link rel="stylesheet" type="text/css" href="../lib/bootstrap/bootstrap.css">
+
+    <!-- import app principal  -->
+    <script src="js/app.js"></script>
+
+    <!-- import controllers  -->
+    <script src="js/controller/phone_list_controller.js"></script>
+
+    <!-- import serviços -->
+    <script src="js/services/contacts_api.js"></script>
+    <script src="js/services/operators_api.js"></script>
+
+    <!-- import diretivas  -->
+    <script src="js/directives/alerts/ui_alert.js"></script>
+    <script src="js/directives/alerts/ui_alert_fields.js"></script>
+
+    <!-- import css -->
+    <link rel="stylesheet" type="text/css" href="css/ui.css">
+  </head>
+
+  <body>
+    <div ng-controller="PhoneListController">
+      <div ng-if="error">
+        <ui-alert title="Aconteceu um erro!!!" message="error"></ui-alert>
+      </div>
+
+      <center><h2>{{title}}</h2></center>
+      <input class="form-control" type="text" placeholder="Digite o contato desejado" ng-model="criterioDeBusca"/>
+      <table class="table table-striped">
+        <thead class="thead-inverse">
+          <tr>
+            <th></th>
+            <th><a href="" ng-click="order_by('name')">Nome</a></th>
+            <th><a href="" ng-click="order_by('phone')">Telefone</a></th>
+            <th><a href="" ng-click="order_by('operator')">Operadora</a></th>
+          </tr>
+        </thead>
+
+        <tr ng-repeat="contact in contacts | filter:{name: criterioDeBusca} | orderBy:sorting_criteria:direction_order">
+          <td><input type="checkbox" ng-model="contact.selected"/></td>
+          <td>{{contact.name}}</td>
+          <td>{{contact.phone}}</td>
+          <td>{{contact.operator}}</td>
+        </tr>
+      </table>
+
+      <form name="contactForm">
+        <input class="form-control" placeholder="Nome" type="text" ng-model="contact.name" name="name" ng-required="true" ng-minlength="3"/>
+        <input class="form-control" placeholder="Telefone" type="text" ng-model="contact.phone" name="phone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/"/>
+
+        <select class="form-control" ng-model="contact.operator" ng-options="operator.id as operator.name for operator in operators">
+          <option value="">Selecione uma operadora</option>
+        </select>
+
+        <ui-alert-fields></ui-alert-fields>
+
+        <center>
+          <input type="button" class="btn btn-primary"  ng-click="add_contact(contact)" ng-disabled="contactForm.$invalid" value="Salvar"/>
+          <input type="button" class="btn btn-danger" ng-click="delete_contact(is_selected(contacts))" ng-disabled="!is_selected(contacts)" value="Apagar contact"/>
+        </center>
+      </form>
+    </div>
+  </body>
+</html>

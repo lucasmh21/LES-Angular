@@ -1,0 +1,9 @@
+<div class="alert alert-warning" ng-messages="contactForm.name.$error" ng-if='contactForm.name.$dirty'>
+  <div ng-message="required"> Preencha o nome </div>
+  <div ng-message="minlength"> O tamanho do nome deve possuir ao menos 3 caracteres </div>
+</div>
+
+<div class="alert alert-warning" ng-messages="contactForm.phone.$error" ng-if='contactForm.phone.$dirty'>
+  <div ng-message="required"> Preencha o telefone </div>
+  <div ng-message="pattern"> O campo deve ter o formato DDDDD-DDDD </div>
+</div>
