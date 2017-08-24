@@ -1,5 +1,5 @@
 angular.module("PhoneList").factory("operatorsAPI", function($http){
-  let _getOperators = function(){
+  function _getOperators(){
     return $http.get("http://localhost:4000/api/v1/operators");
   };
 

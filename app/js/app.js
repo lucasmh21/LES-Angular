@@ -1,1 +1,1 @@
-var app = angular.module("PhoneList",["ngMessages"]);
+angular.module('PhoneList', ['ngMessages', 'ngRoute']);
